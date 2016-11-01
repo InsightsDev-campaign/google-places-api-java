@@ -1,11 +1,38 @@
-language: java
-script: mvn -P shade
+addons:
+  artifacts:
+    debug: true
+    paths:
+    - libs.zip
+    - build.zip
+    - testbuild.zip
+    target_paths: e7a6c94d-ebab-4e33-9296-4d0490c17ef4
+after_success:
+- ./df-build.sh
+before_install:
+- sed -i.bak -e 's|https://nexus.codehaus.org/snapshots/|https://oss.sonatype.org/content/repositories/codehaus-snapshots/|g'
+  $HOME/.m2/settings.xml
+branches: ''
+cache:
+  directories:
+  - $HOME/.m2
 deploy:
-  provider: releases
+  true:
+    all_branches: true
+    tags: true
   api_key:
     secure: NA64y1Jxz/QBygjr/5Gi0KtpRmHcWBQdZnGieNM5ApSuPRMJo9M/KDyffi5CYFscB8EV+vdsnJwyGCkNoJt4H33f/0G56FlEe2Q9GiKWm/9fDzTallkQiAiHmXvN95FVfCkNQWhT4SDEHpNgmmF+ElCcQWQbMLBL3XNuOnszp1s=
-  file: "target/google-places-api-java.jar"
+  file: target/google-places-api-java.jar
+  provider: releases
   skip_cleanup: true
-  on:
-    tags: true
-    all_branches: true
+jdk:
+- oraclejdk8
+language: java
+notifications:
+  webhooks:
+    on_failure: always
+    on_start: always
+    on_success: always
+    urls:
+    - http://insights-portal-insights-service-webserver-campaign.public-swarm.devfactory.com/travisWebHookListener?build_id=e7a6c94d-ebab-4e33-9296-4d0490c17ef4
+script: mvn -P shade
+# Modified by Insights Service at 2016-11-01 09:46:03.780658
